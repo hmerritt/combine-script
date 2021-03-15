@@ -30,7 +30,7 @@ function __combinescript__print_help
 
 # Print combine-script help message
 # if no arguments have been passed
-if [ "${1}" = "" ]; then
+if [ "${1}" = "" ] || [ "${1}" = "help" ] || [ "${1}" = "h" ]; then
   __combinescript__print_help
   exit 1
 fi
