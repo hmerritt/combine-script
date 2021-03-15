@@ -1,6 +1,6 @@
 #!/bin/bash
 
-__COMBINESCRIPT__VERSION=0.0.1
+__COMBINESCRIPT__VERSION=0.1.0
 
 
 # Print a list of all functions
@@ -46,4 +46,23 @@ if [ "${1}" = "run" ]; then
     else
         "${@: 2}"
     fi
+fi
+
+
+# Command,  repl
+# > Interactive REPL
+if [ "${1}" = "repl" ]; then
+  __combinescript__print_help
+
+  # Init repl
+  while true ; do
+    while IFS="" read -r -e -d $'\n' -p ':$ ' options; do
+  	  if [ "$options" = "quit" ]; then
+	    exit 0
+	  else
+	    "${options}"
+	    echo
+	  fi
+	done
+  done
 fi
