@@ -13,15 +13,22 @@ function __combinescript__print_functions
 }
 
 
+# Print a list of script commands
+function __combinescript__print_commands
+{
+    echo "Commands"
+    echo "  * run     |  run a function"
+    echo "  * help    |  print script help"
+    echo "  * repl    |  shell to run multiple commands (not for programmatic use)"
+}
+
+
 # Print combine-script help
 function __combinescript__print_help
 {
     echo "Help:"
     echo
-    echo "Commands"
-    echo "  * run     |  run a function"
-    echo "  * list    |  return all functions"
-    echo "  * repl    |  shell to run multiple commands (not for programmatic use)"
+    __combinescript__print_commands
     echo
     echo
     __combinescript__print_functions
