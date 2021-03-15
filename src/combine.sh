@@ -13,6 +13,29 @@ function __combinescript__print_functions
 }
 
 
+# Print combine-script help
+function __combinescript__print_help
+{
+    echo "Help:"
+    echo
+    echo "Commands"
+    echo "  * run     |  run a function"
+    echo "  * list    |  return all functions"
+    echo "  * repl    |  shell to run multiple commands (not for programmatic use)"
+    echo
+    echo
+    __combinescript__print_functions
+}
+
+
+# Print combine-script help message
+# if no arguments have been passed
+if [ "${1}" = "" ]; then
+  __combinescript__print_help
+  exit 1
+fi
+
+
 # Command,  run
 # > Run function via CLI
 if [ "${1}" = "run" ]; then
