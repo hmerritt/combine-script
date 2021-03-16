@@ -52,9 +52,21 @@ fi
 
 
 # Script Variables
-VERSION=0.1.0
+VERSION=0.2.0
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
 BUNDLE_PATH="./__bundle"
 BUNDLE_HELPER_FUNCTIONS="yes"
+
+
+# Check if $SCRIPTS_PATH is a directory
+if [ ! -d "${SCRIPTS_PATH}" ];
+then
+	echo -e "\e[31mERROR"
+    echo -e "  * Path to scripts folder does not exist:"
+    echo -e "    : ${SCRIPTS_PATH}"
+    echo -e "\033[0m"
+    print_help
+    exit 1
+fi
