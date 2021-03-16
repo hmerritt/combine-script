@@ -67,7 +67,7 @@ if [ "${1}" = "repl" ]; then
   	  if [ "$options" = "quit" ]; then
 	    exit 0
 	  else
-	    "${options}"
+	    ${options}
 	    echo
 	  fi
 	done
