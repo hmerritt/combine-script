@@ -70,3 +70,11 @@ then
     print_help
     exit 1
 fi
+
+
+# Remove $BUNDLE_PATH file if it exists
+delete_file "${BUNDLE_PATH}"
+
+
+# Get all script files in a directory (non-recursive)
+files=($( cd "${SCRIPTS_PATH}" && ls -A1 | grep -E "*.sh|*.bash" ))
