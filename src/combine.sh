@@ -49,3 +49,12 @@ if [ "${1}" = "help" ] || [ "${1}" = "h" ]; then
   print_help
   exit 1
 fi
+
+
+# Script Variables
+VERSION=0.1.0
+
+SCRIPTS_PATH=$(fallback $1 "./scripts")
+SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
+BUNDLE_PATH="./__bundle"
+BUNDLE_HELPER_FUNCTIONS="yes"
