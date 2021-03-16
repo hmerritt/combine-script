@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=0.2.0
+VERSION=1.0.0
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -213,3 +213,16 @@ fi
 
 EOF
 fi
+
+
+# Make output script executable
+chmod +x "${SCRIPT_OUTPUT_PATH}"
+
+
+# Remove $BUNDLE_PATH file if it exists
+delete_file "${BUNDLE_PATH}"
+
+
+#
+echo
+echo -e "\e[42m${WHITE}Combine complete\033[0m"
