@@ -94,3 +94,29 @@ done
 # from the bundle file
 sed -i "s/\#\!\/bin\/bash//g" "${BUNDLE_PATH}"
 sed -i "s/\#\!\/bin\/sh//g" "${BUNDLE_PATH}"
+
+
+echo
+echo -e "Creating output script"
+echo -e "  * ${SCRIPT_OUTPUT_PATH}"
+
+# Create final script file
+touch "${SCRIPT_OUTPUT_PATH}"
+dd of="${SCRIPT_OUTPUT_PATH}" << EOF
+#!/bin/bash
+
+#
+# Collection of scripts combined using:
+# https://github.com/hmerritt/combine-script
+#
+# Metadata:
+#   | Compiled Timestamp | $(date +%s)       |
+#   | Compiled Date      | $(date +"%Y-%m-%d %H:%M") |
+#   | Combine.sh Version | ${VERSION}            |
+#
+# Scripts Bundled:
+#  (${#files[@]})  ${files[@]}
+#
+
+
+EOF
