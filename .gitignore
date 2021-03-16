@@ -1,0 +1,5 @@
+
+src/*/*.sh
+src/script.sh
+
+!src/combine.sh
