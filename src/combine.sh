@@ -120,3 +120,7 @@ dd of="${SCRIPT_OUTPUT_PATH}" << EOF
 
 
 EOF
+
+
+# Append bundle to $SCRIPT_OUTPUT_PATH
+cat "${BUNDLE_PATH}" >> "${SCRIPT_OUTPUT_PATH}"
