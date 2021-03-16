@@ -89,3 +89,8 @@ do
 	echo -e "  * Add ${file} to bundle"
 	echo -e "\n\n\n#\n# Script: ${file}\n#\n" | cat - "${SCRIPTS_PATH}/${file}" >> "${BUNDLE_PATH}"
 done
+
+# Remove every instance of shebang (#!)
+# from the bundle file
+sed -i "s/\#\!\/bin\/bash//g" "${BUNDLE_PATH}"
+sed -i "s/\#\!\/bin\/sh//g" "${BUNDLE_PATH}"
