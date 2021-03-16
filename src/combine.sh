@@ -78,3 +78,14 @@ delete_file "${BUNDLE_PATH}"
 
 # Get all script files in a directory (non-recursive)
 files=($( cd "${SCRIPTS_PATH}" && ls -A1 | grep -E "*.sh|*.bash" ))
+
+
+echo -e "Bundling Scripts"
+
+# Loop each script in $SCRIPTS_PATH
+# to create one bundle script
+for file in "${files[@]}"
+do
+	echo -e "  * Add ${file} to bundle"
+	echo -e "\n\n\n#\n# Script: ${file}\n#\n" | cat - "${SCRIPTS_PATH}/${file}" >> "${BUNDLE_PATH}"
+done
