@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.1.0
+VERSION=1.2.0
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -134,6 +134,13 @@ if [ "${BUNDLE_INTERFACE_FRAMEWORK}" = "yes" ]; then
 #
 # Combine.sh Interface Framework
 #
+
+__ARGS="\${@}"
+
+LOG="yes"
+LOGPATH="./script.log"
+ERROR=""
+
 
 # Color codes
 NOCOLOR="\\033[0m"
@@ -224,6 +231,42 @@ function warning
 }
 
 
+# Use a fallback value if initial value does not exist
+# - Usage: value=\$(fallback \$1 "fallback")
+# - \$1: initial value
+# - \$2: fallback value
+function fallback
+{
+	local value="\${1}"
+
+	# Check for NULL/empty value
+	if [ ! -n "\${value}" ]; then
+		local value="\${2}"
+	fi
+
+	echo "\${value}"
+}
+
+
+# Log script
+# date -- script name -- ok/error
+function exitlog
+{
+	NAMEOFFUNCTION=\$(fallback "\${__ARGS}" "~~")
+	if [ "\${ERROR}" == "ERROR" ]; then code="ERROR"; else code="OK"; fi
+	echo "\$(date)  --  \$code  --  \${NAMEOFFUNCTION}" >> "\${LOGPATH}"
+}
+
+# Capture if process fails
+function onfail
+{
+	if [ "\${?}" != "0" ]; then
+		# Error
+		ERROR="ERROR"
+	fi
+}
+
+
 
 EOF
 fi
@@ -296,6 +339,10 @@ if [ "\${1}" = "run" ]; then
         exit 0
     else
         "\${@: 2}"
+
+		if [ "\${LOG}" == "yes" ]; then
+			exitlog
+		fi
     fi
 fi
 
