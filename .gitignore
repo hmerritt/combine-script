@@ -2,4 +2,6 @@
 src/*/*.sh
 src/script.sh
 
+*.log
+
 !src/combine.sh
