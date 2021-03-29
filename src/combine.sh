@@ -52,11 +52,12 @@ fi
 
 
 # Script Variables
-VERSION=1.0.0
+VERSION=1.1.0
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
 BUNDLE_PATH="./__bundle"
+BUNDLE_INTERFACE_FRAMEWORK="yes"
 BUNDLE_HELPER_FUNCTIONS="yes"
 
 
@@ -120,6 +121,112 @@ dd of="${SCRIPT_OUTPUT_PATH}" << EOF
 
 
 EOF
+
+
+# Include helper function within $SCRIPT_OUTPUT_PATH
+# Default: yes
+if [ "${BUNDLE_INTERFACE_FRAMEWORK}" = "yes" ]; then
+    echo
+    echo -e "Injecting combine Interface framework"
+
+    cat <<EOF >> ${SCRIPT_OUTPUT_PATH}
+
+#
+# Combine.sh Interface Framework
+#
+
+# Color codes
+NOCOLOR="\\033[0m"
+
+# Text
+BLACK="\\e[30m"
+RED="\\e[31m"
+GREEN="\\e[32m"
+ORANGE="\\e[33m"
+BLUE="\\e[34m"
+PURPLE="\\e[35m"
+CYAN="\\e[36m"
+LIGHTGRAY="\\e[37m"
+DARKGRAY="\\e[90m"
+LIGHTRED="\\e[91m"
+LIGHTGREEN="\\e[92m"
+YELLOW="\\e[93m"
+LIGHTBLUE="\\e[94m"
+LIGHTPURPLE="\\e[95m"
+LIGHTCYAN="\\e[96m"
+WHITE="\\e[97m"
+
+# Background
+BG_RED="\\e[41m\${WHITE}"
+BG_GREEN="\\e[42m\${WHITE}"
+BG_YELLOW="\\e[43m\${WHITE}"
+BG_BLUE="\\e[44m\${WHITE}"
+BG_PURPLE="\\e[45m\${WHITE}"
+BG_CYAN="\\e[46m\${WHITE}"
+BG_LIGHTRED="\\e[101m\${WHITE}"
+BG_LIGHTGREEN="\\e[102m\${WHITE}"
+BG_WHITE="\\e[107m\${BLACK}"
+
+
+# Print colored text to the terminal
+# - \$1: color
+# - \$2: text
+function cprint
+{
+	echo -e "\$1\$2\${NOCOLOR}"
+}
+
+
+# Print colored text
+# - \$1: text
+# -> output colored text with no background
+function white
+{
+	cprint \$WHITE "\${1}"
+}
+
+function green
+{
+	cprint \$GREEN "\${1}"
+}
+
+function red
+{
+	cprint \$RED "\${1}"
+}
+
+function orange
+{
+	cprint \$ORANGE "\${1}"
+}
+
+
+# Print message by named state
+# - \$1: text
+function success
+{
+	cprint \$BG_GREEN "\${1}"
+}
+
+function failure
+{
+	cprint \$BG_RED "\${1}"
+}
+
+function error
+{
+	red "\${1}"
+}
+
+function warning
+{
+	orange "\${1}"
+}
+
+
+
+EOF
+fi
 
 
 # Append bundle to $SCRIPT_OUTPUT_PATH
