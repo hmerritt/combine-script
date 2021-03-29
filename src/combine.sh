@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.2.0
+VERSION=1.2.1
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -253,8 +253,13 @@ function fallback
 function exitlog
 {
 	NAMEOFFUNCTION=\$(fallback "\${__ARGS}" "~~")
-	if [ "\${ERROR}" == "ERROR" ]; then code="ERROR"; else code="OK"; fi
-	echo "\$(date)  --  \$code  --  \${NAMEOFFUNCTION}" >> "\${LOGPATH}"
+	if [ -n "\${ERROR}" ]; then code="ERROR"; else code="OK"; fi
+
+	if [ "\${code}" == "OK" ]; then
+		echo "\$(date)  --   OK    --  \${NAMEOFFUNCTION}" >> "\${LOGPATH}"
+	else
+		echo "\$(date)  --  ERROR  --  \${NAMEOFFUNCTION}" >> "\${LOGPATH}"
+	fi
 }
 
 # Capture if process fails
@@ -340,6 +345,9 @@ if [ "\${1}" = "run" ]; then
     else
         "\${@: 2}"
 
+		onfail
+
+		# Log what just ran
 		if [ "\${LOG}" == "yes" ]; then
 			exitlog
 		fi
