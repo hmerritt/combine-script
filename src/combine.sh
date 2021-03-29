@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.2.1
+VERSION=1.2.2
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -350,6 +350,11 @@ if [ "\${1}" = "run" ]; then
 		# Log what just ran
 		if [ "\${LOG}" == "yes" ]; then
 			exitlog
+		fi
+
+		# If ERROR, force exit code
+		if [ -n "\${ERROR}" ]; then
+			exit 1
 		fi
     fi
 fi
