@@ -52,13 +52,17 @@ fi
 
 
 # Script Variables
-VERSION=1.2.2
+VERSION=1.2.3
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
 BUNDLE_PATH="./__bundle"
+
+# Options
 BUNDLE_INTERFACE_FRAMEWORK="yes"
 BUNDLE_HELPER_FUNCTIONS="yes"
+LOG="no"
+LOGPATH="./script.log"
 
 
 # Check if $SCRIPTS_PATH is a directory
@@ -127,7 +131,7 @@ EOF
 # Default: yes
 if [ "${BUNDLE_INTERFACE_FRAMEWORK}" = "yes" ]; then
     echo
-    echo -e "Injecting combine Interface framework"
+    echo -e "Injecting combine interface framework"
 
     cat <<EOF >> ${SCRIPT_OUTPUT_PATH}
 
@@ -137,8 +141,8 @@ if [ "${BUNDLE_INTERFACE_FRAMEWORK}" = "yes" ]; then
 
 __ARGS="\${@}"
 
-LOG="yes"
-LOGPATH="./script.log"
+LOG="${LOG}"
+LOGPATH="${LOGPATH}"
 ERROR=""
 
 
@@ -330,7 +334,7 @@ function __combinescript__print_help
 # if no arguments have been passed
 if [ "\${1}" = "" ] || [ "\${1}" = "help" ] || [ "\${1}" = "h" ]; then
   __combinescript__print_help
-  exit 1
+  exit 0
 fi
 
 
