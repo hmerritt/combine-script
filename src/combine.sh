@@ -303,8 +303,19 @@ if [ "${BUNDLE_HELPER_FUNCTIONS}" = "yes" ]; then
 function __combinescript__print_functions
 {
 	echo "Functions"
-    grep "^function" \$0
-    grep "^()" \$0
+    # grep "^function" \$0
+    grep "^function" \$0 | while read -r line ; do
+		# Exclude native combine functions
+		if [ "\$line" != "function cprint" ] && [ "\$line" != "function white" ] && [ "\$line" != "function green" ] && [ "\$line" != "function red" ] && [ "\$line" != "function orange" ] && [ "\$line" != "function success" ] && [ "\$line" != "function failure" ] && [ "\$line" != "function error" ] && [ "\$line" != "function warning" ] && [ "\$line" != "function fallback" ] && [ "\$line" != "function exitlog" ] && [ "\$line" != "function onfail" ] && [ "\$line" != "function __combinescript__print_functions" ] && [ "\$line" != "function __combinescript__print_commands" ] && [ "\$line" != "function __combinescript__print_help" ]; then
+			echo \$line
+		fi
+	done
+    grep "^()" \$0 | while read -r line ; do
+		# Exclude native combine functions
+		if [ "\$line" != "function cprint" ] && [ "\$line" != "function white" ] && [ "\$line" != "function green" ] && [ "\$line" != "function red" ] && [ "\$line" != "function orange" ] && [ "\$line" != "function success" ] && [ "\$line" != "function failure" ] && [ "\$line" != "function error" ] && [ "\$line" != "function warning" ] && [ "\$line" != "function fallback" ] && [ "\$line" != "function exitlog" ] && [ "\$line" != "function onfail" ] && [ "\$line" != "function __combinescript__print_functions" ] && [ "\$line" != "function __combinescript__print_commands" ] && [ "\$line" != "function __combinescript__print_help" ]; then
+			echo \$line
+		fi
+	done
 }
 
 
