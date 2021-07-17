@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.2.6
+VERSION=1.2.7
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -140,6 +140,11 @@ if [ "${BUNDLE_INTERFACE_FRAMEWORK}" = "yes" ]; then
 #
 
 __ARGS="\${@}"
+
+
+SCRIPT_DIR="\$( cd -- "\$(dirname "\$0")" >/dev/null 2>&1 ; pwd -P )"
+SCRIPT_DIR_PARENT="\$( cd -- "\${SCRIPT_DIR}/../" ; pwd -P )"
+
 
 LOG="${LOG}"
 LOGPATH="${LOGPATH}"
