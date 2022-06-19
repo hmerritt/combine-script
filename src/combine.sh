@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.2.7
+VERSION=1.3.7
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -265,9 +265,9 @@ function exitlog
 	if [ -n "\${ERROR}" ]; then code="ERROR"; else code="OK"; fi
 
 	if [ "\${code}" == "OK" ]; then
-		echo "\$(date)  --   OK    --  \${NAMEOFFUNCTION}" >> "\${LOGPATH}"
+		echo "\$(date '+%Y-%m-%d %H:%M %a')  --   OK    --  \${NAMEOFFUNCTION}" >> "\${LOGPATH}"
 	else
-		echo "\$(date)  --  ERROR  --  \${NAMEOFFUNCTION}" >> "\${LOGPATH}"
+		echo "\$(date '+%Y-%m-%d %H:%M %a')  --  ERROR  --  \${NAMEOFFUNCTION}" >> "\${LOGPATH}"
 	fi
 }
 
