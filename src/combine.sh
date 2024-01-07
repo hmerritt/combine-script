@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.3.7
+VERSION=1.4.7
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -303,6 +303,17 @@ if [ "${BUNDLE_HELPER_FUNCTIONS}" = "yes" ]; then
 # Combine.sh Helper Functions
 #
 
+# Print a list of script commands
+function __combinescript__print_commands
+{
+    echo "Commands"
+    echo "  * run <fn>  |  run a function"
+	echo "  * cat <fn>  |  prints function code"
+    echo "  * help      |  print script help"
+    echo "  * repl      |  shell to run multiple commands (not for programmatic use)"
+}
+
+
 # Print a list of all functions
 # within the current script
 function __combinescript__print_functions
@@ -323,16 +334,6 @@ function __combinescript__print_functions
 }
 
 
-# Print a list of script commands
-function __combinescript__print_commands
-{
-    echo "Commands"
-    echo "  * run     |  run a function"
-    echo "  * help    |  print script help"
-    echo "  * repl    |  shell to run multiple commands (not for programmatic use)"
-}
-
-
 # Print combine-script help
 function __combinescript__print_help
 {
@@ -349,6 +350,20 @@ function __combinescript__print_help
 if [ "\${1}" = "" ] || [ "\${1}" = "help" ] || [ "\${1}" = "h" ]; then
   __combinescript__print_help
   exit 0
+fi
+
+
+# Command,  cat
+# > Print function code
+if [ "\${1}" = "cat" ]; then
+    if [ "\${2}" = "" ]; then
+        echo -e "\e[31mNo function passed\033[0m"
+        echo "cat <function>"
+        echo
+        exit 0
+    else
+		declare -f "\${@: 2}"
+    fi
 fi
 
 
