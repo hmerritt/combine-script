@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.5.10
+VERSION=1.7.10
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -62,6 +62,7 @@ BUNDLE_PATH="./__bundle"
 BUNDLE_INTERFACE_FRAMEWORK="yes"
 BUNDLE_HELPER_FUNCTIONS="yes"
 USE_PUBLIC_FUNCTIONS="yes" # Only lists / executes "public functions" (public functions start with capital letter)
+USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE="yes"
 LOG="no"
 LOGPATH="./script.log"
 
@@ -149,6 +150,7 @@ SCRIPT_DIR_PARENT="\$( cd -- "\${SCRIPT_DIR}/../" ; pwd -P )"
 
 # Options
 USE_PUBLIC_FUNCTIONS="${USE_PUBLIC_FUNCTIONS}"
+USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE="${USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE}"
 LOG="${LOG}"
 LOGPATH="${LOGPATH}"
 ERROR=""
@@ -306,22 +308,55 @@ if [ "${BUNDLE_HELPER_FUNCTIONS}" = "yes" ]; then
 # Combine.sh Helper Functions
 #
 
-# Check if function name is public
-function __combinescript__is_function_public
+# List of all internal functions injected into output script
+__combinescript__injected_functions=("cprint" "white" "green" "red" "orange" "success" "failure" "error" "warning" "fallback" "exitlog" "onfail" "__combinescript__function_exists" "__combinescript__function_name" "__combinescript__is_function_public" "__combinescript__print_commands" "__combinescript__print_functions" "__combinescript__print_help")
+
+# Checks if function name is an injected internal function
+function __combinescript__function_name_is_injected
 {
-    local fname="\$1"
-    if [[ \$fname == [A-Z]* ]] || [[ "\$USE_PUBLIC_FUNCTIONS" != "yes" ]]; then
-        return 0
-    else
-        return 1
-    fi
+	local search="\$1"
+
+	for item in "\${__combinescript__injected_functions[@]}"; do
+		if [[ "\$item" == "\$search" ]]; then
+			return 0
+		fi
+	done
+
+	return 1
 }
 
 # Check if public function exists
 function __combinescript__function_exists
 {
-    declare -f -F "$1" > /dev/null
-    return $?
+    local func_name="\$1"
+    [[ "\$(declare -f "\$func_name")" ]]
+}
+
+# Returns function name (if USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE is true, input may be modified)
+function __combinescript__function_name
+{
+	local fname="\$1"
+	local fname_capital=\$(printf '%s' "\${1^}")
+	if ! __combinescript__function_exists "\${fname}" && [[ "\$USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE" == "yes" ]]; then
+		if __combinescript__function_exists "\${fname_capital}"; then
+			echo "\${fname_capital}"
+			return 0
+		fi
+	fi
+	echo "\${fname}"
+	return 0
+}
+
+# Check if function name is public
+function __combinescript__is_function_public
+{
+    local fname="\$1"
+    if [[ \$fname == [A-Z]* ]] || [[ "\$USE_PUBLIC_FUNCTIONS" != "yes" ]]; then
+		if ! __combinescript__function_name_is_injected "\$fname"; then
+        	return 0
+		fi
+    fi
+    return 1
 }
 
 # Print a list of script commands
@@ -385,7 +420,8 @@ if [ "\${1}" = "cat" ]; then
         echo
         exit 0
     else
-		declare -f "\${2}"
+		fname=\$(__combinescript__function_name "\${2}")
+		declare -f "\${fname}"
     fi
 fi
 
