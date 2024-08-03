@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.5.8
+VERSION=1.5.10
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -317,6 +317,13 @@ function __combinescript__is_function_public
     fi
 }
 
+# Check if public function exists
+function __combinescript__function_exists
+{
+    declare -f -F "$1" > /dev/null
+    return $?
+}
+
 # Print a list of script commands
 function __combinescript__print_commands
 {
@@ -387,12 +394,24 @@ fi
 # > Run function via CLI
 if [ "\${1}" = "run" ]; then
     if [ "\${2}" = "" ]; then
-        echo -e "\e[31mNo function passed\033[0m"
+        error "error: no function passed"
         echo "run <function>"
         echo
-        exit 0
+        exit 1
     else
-        "\${2}"
+		if ! __combinescript__function_exists "\${2}"; then
+			error "error: function does not exist"
+			echo
+			exit 1
+		fi
+
+		if ! __combinescript__is_function_public "\${2}"; then
+			error "error: function exists but has not been made public"
+			echo
+			exit 1
+		fi
+
+		"\${2}"
 
 		onfail
 
