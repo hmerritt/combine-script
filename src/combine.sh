@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.5.7
+VERSION=1.5.8
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -61,6 +61,7 @@ BUNDLE_PATH="./__bundle"
 # Options
 BUNDLE_INTERFACE_FRAMEWORK="yes"
 BUNDLE_HELPER_FUNCTIONS="yes"
+USE_PUBLIC_FUNCTIONS="yes" # Only lists / executes "public functions" (public functions start with capital letter)
 LOG="no"
 LOGPATH="./script.log"
 
@@ -146,6 +147,8 @@ SCRIPT_DIR="\$( cd -- "\$(dirname "\$0")" >/dev/null 2>&1 ; pwd -P )"
 SCRIPT_DIR_PARENT="\$( cd -- "\${SCRIPT_DIR}/../" ; pwd -P )"
 
 
+# Options
+USE_PUBLIC_FUNCTIONS="${USE_PUBLIC_FUNCTIONS}"
 LOG="${LOG}"
 LOGPATH="${LOGPATH}"
 ERROR=""
@@ -303,10 +306,11 @@ if [ "${BUNDLE_HELPER_FUNCTIONS}" = "yes" ]; then
 # Combine.sh Helper Functions
 #
 
+# Check if function name is public
 function __combinescript__is_function_public
 {
     local fname="\$1"
-    if [[ \$fname == [A-Z]* ]]; then
+    if [[ \$fname == [A-Z]* ]] || [[ "\$USE_PUBLIC_FUNCTIONS" != "yes" ]]; then
         return 0
     else
         return 1
