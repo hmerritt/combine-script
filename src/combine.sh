@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.4.7
+VERSION=1.5.7
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -303,6 +303,16 @@ if [ "${BUNDLE_HELPER_FUNCTIONS}" = "yes" ]; then
 # Combine.sh Helper Functions
 #
 
+function __combinescript__is_function_public
+{
+    local fname="\$1"
+    if [[ \$fname == [A-Z]* ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Print a list of script commands
 function __combinescript__print_commands
 {
@@ -321,15 +331,17 @@ function __combinescript__print_functions
 	echo "Functions"
     # grep "^function" \$0
     grep "^function" \$0 | while read -r line ; do
-		# Exclude native combine functions
-		if [ "\$line" != "function cprint" ] && [ "\$line" != "function white" ] && [ "\$line" != "function green" ] && [ "\$line" != "function red" ] && [ "\$line" != "function orange" ] && [ "\$line" != "function success" ] && [ "\$line" != "function failure" ] && [ "\$line" != "function error" ] && [ "\$line" != "function warning" ] && [ "\$line" != "function fallback" ] && [ "\$line" != "function exitlog" ] && [ "\$line" != "function onfail" ] && [ "\$line" != "function __combinescript__print_functions" ] && [ "\$line" != "function __combinescript__print_commands" ] && [ "\$line" != "function __combinescript__print_help" ]; then
-		    fname=\$(echo "\${line}" | sed -n 's/function //p')
+		# Extract function name + only print public functions (starts with upper-case)
+		fname=\$(echo "\${line}" | sed -n 's/function //p')
+		if __combinescript__is_function_public "\${fname}"; then
 			echo "  * \${fname}"
 		fi
 	done
     grep -e "^\w*\s()" -e "^\w*()" \$0 | while read -r line ; do
 		fname=\$(echo "\${line}" | grep -o "^\w*\b")
-		echo "  * \${fname}"
+		if __combinescript__is_function_public "\${fname}"; then
+			echo "  * \${fname}"
+		fi
 	done
 }
 
@@ -362,7 +374,7 @@ if [ "\${1}" = "cat" ]; then
         echo
         exit 0
     else
-		declare -f "\${@: 2}"
+		declare -f "\${2}"
     fi
 fi
 
@@ -376,7 +388,7 @@ if [ "\${1}" = "run" ]; then
         echo
         exit 0
     else
-        "\${@: 2}"
+        "\${2}"
 
 		onfail
 
