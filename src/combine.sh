@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=1.7.10
+VERSION=2.1.15
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -336,7 +336,7 @@ function __combinescript__function_exists
 function __combinescript__function_name
 {
 	local fname="\$1"
-	local fname_capital=\$(printf '%s' "\${1^}")
+	local fname_capital="\${1^}"
 	if ! __combinescript__function_exists "\${fname}" && [[ "\$USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE" == "yes" ]]; then
 		if __combinescript__function_exists "\${fname_capital}"; then
 			echo "\${fname_capital}"
@@ -435,19 +435,21 @@ if [ "\${1}" = "run" ]; then
         echo
         exit 1
     else
-		if ! __combinescript__function_exists "\${2}"; then
+		fname=\$(__combinescript__function_name "\${2}")
+
+		if ! __combinescript__function_exists "\${fname}"; then
 			error "error: function does not exist"
 			echo
 			exit 1
 		fi
 
-		if ! __combinescript__is_function_public "\${2}"; then
+		if ! __combinescript__is_function_public "\${fname}"; then
 			error "error: function exists but has not been made public"
 			echo
 			exit 1
 		fi
 
-		"\${2}"
+		"\${fname}"
 
 		onfail
 
