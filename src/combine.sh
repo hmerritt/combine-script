@@ -469,19 +469,41 @@ fi
 # Command,  repl
 # > Interactive REPL
 if [ "\${1}" = "repl" ]; then
-  __combinescript__print_help
+	__combinescript__print_help
 
-  # Init repl
-  while true ; do
-    while IFS="" read -r -e -d $'\n' -p ':$ ' options; do
-  	  if [ "\$options" = "quit" ]; then
-	    exit 0
-	  else
-	    \${options}
-	    echo
-	  fi
+	# Init repl
+	while true ; do
+		while IFS="" read -r -e -d $'\n' -p ':$ ' options; do
+			if [ "\$options" = "quit" ] || [ "\$options" = "exit" ]; then
+				exit 0
+			fi
+
+			if [ "\${options}" = "" ]; then
+				continue
+			fi
+
+			fname=\$(__combinescript__function_name "\${options}")
+
+			if ! __combinescript__function_exists "\${fname}"; then
+				error "error: function does not exist"
+				echo
+				continue
+			fi
+
+			if ! __combinescript__is_function_public "\${fname}"; then
+				error "error: function exists but has not been made public"
+				echo
+				continue
+			fi
+
+			"\${fname}"
+
+			# onfail
+			if [ "\${?}" != "0" ]; then
+				warning "warning: function returned non-zero exit code"
+			fi
+		done
 	done
-  done
 fi
 
 EOF
