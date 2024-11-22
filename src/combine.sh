@@ -309,7 +309,7 @@ if [ "${BUNDLE_HELPER_FUNCTIONS}" = "yes" ]; then
 #
 
 # List of all internal functions injected into output script
-__combinescript__injected_functions=("cprint" "white" "green" "red" "orange" "success" "failure" "error" "warning" "fallback" "exitlog" "onfail" "__combinescript__function_exists" "__combinescript__function_name" "__combinescript__is_function_public" "__combinescript__print_commands" "__combinescript__print_functions" "__combinescript__print_help")
+__combinescript__injected_functions=("cprint" "white" "green" "red" "orange" "success" "failure" "error" "warning" "fallback" "exitlog" "onfail" "__combinescript__function_exists" "__combinescript__function_name" "__combinescript__is_function_public" "__combinescript__print_commands" "__combinescript__print_functions" "__combinescript__print_help" "__combinescript__function_name_is_injected")
 
 # Checks if function name is an injected internal function
 function __combinescript__function_name_is_injected
