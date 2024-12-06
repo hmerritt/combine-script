@@ -1,6 +1,8 @@
 
 src/*/*.sh
 src/script.sh
+example/script.sh
+example/myScript.sh
 
 *.log
 

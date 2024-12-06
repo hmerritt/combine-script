@@ -4,12 +4,16 @@ A simple script that combines bash scripts **and** provides CLI usage for all us
 
 ## Usage
 
+See [Example](./example/README.md) for a more detailed example.
+
 ### Recommendations
 
 1. Write all scripts using functions
     - This is because functions combine easily and can be called via CLI when combined
 2. Don't combine scripts that use CLI arguments (wrap them within a function instead!)
     - CLI arguments will mess with the other scripts when combined
+3. Any function you write can be called within any other function (even if they are in a different file!)
+4. Functions can be public/private. A public function starts with a capital letter, and can be executed from the CLI after combining. Private functions act as utility functions and are hidden from the CLI.
 
 ### Build a Combined Script
 
