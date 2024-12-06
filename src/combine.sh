@@ -52,7 +52,7 @@ fi
 
 
 # Script Variables
-VERSION=2.1.15
+VERSION=2.1.17
 
 SCRIPTS_PATH=$(fallback $1 "./scripts")
 SCRIPT_OUTPUT_PATH=$(fallback $2 "./script.sh")
@@ -140,20 +140,6 @@ if [ "${BUNDLE_INTERFACE_FRAMEWORK}" = "yes" ]; then
 #
 # Combine.sh Interface Framework
 #
-
-__ARGS="\${@}"
-
-
-SCRIPT_DIR="\$( cd -- "\$(dirname "\$0")" >/dev/null 2>&1 ; pwd -P )"
-SCRIPT_DIR_PARENT="\$( cd -- "\${SCRIPT_DIR}/../" ; pwd -P )"
-
-
-# Options
-USE_PUBLIC_FUNCTIONS="${USE_PUBLIC_FUNCTIONS}"
-USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE="${USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE}"
-LOG="${LOG}"
-LOGPATH="${LOGPATH}"
-ERROR=""
 
 
 # Color codes
@@ -245,6 +231,44 @@ function warning
 }
 
 
+EOF
+fi
+
+
+# Append bundle to $SCRIPT_OUTPUT_PATH
+cat "${BUNDLE_PATH}" >> "${SCRIPT_OUTPUT_PATH}"
+
+
+# Include helper function within $SCRIPT_OUTPUT_PATH
+# Default: yes
+if [ "${BUNDLE_HELPER_FUNCTIONS}" = "yes" ]; then
+    echo
+    echo -e "Injecting combine helper functions"
+
+    cat <<EOF >> ${SCRIPT_OUTPUT_PATH}
+
+
+#
+# Combine.sh Helper Functions
+#
+
+__ARGS="\${@}"
+SCRIPT_DIR="\$( cd -- "\$(dirname "\$0")" >/dev/null 2>&1 ; pwd -P )"
+SCRIPT_DIR_PARENT="\$( cd -- "\${SCRIPT_DIR}/../" ; pwd -P )"
+
+
+# List of all internal functions injected into output script
+__combinescript__injected_functions=("cprint" "white" "green" "red" "orange" "success" "failure" "error" "warning" "fallback" "exitlog" "onfail" "__combinescript__function_exists" "__combinescript__function_name" "__combinescript__is_function_public" "__combinescript__print_commands" "__combinescript__print_functions" "__combinescript__print_help" "__combinescript__function_name_is_injected")
+
+
+# Options
+USE_PUBLIC_FUNCTIONS="${USE_PUBLIC_FUNCTIONS}"
+USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE="${USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE}"
+LOG="${LOG}"
+LOGPATH="${LOGPATH}"
+ERROR=""
+
+
 # Use a fallback value if initial value does not exist
 # - Usage: value=\$(fallback \$1 "fallback")
 # - \$1: initial value
@@ -276,6 +300,7 @@ function exitlog
 	fi
 }
 
+
 # Capture if process fails
 function onfail
 {
@@ -285,31 +310,6 @@ function onfail
 	fi
 }
 
-
-
-EOF
-fi
-
-
-# Append bundle to $SCRIPT_OUTPUT_PATH
-cat "${BUNDLE_PATH}" >> "${SCRIPT_OUTPUT_PATH}"
-
-
-# Include helper function within $SCRIPT_OUTPUT_PATH
-# Default: yes
-if [ "${BUNDLE_HELPER_FUNCTIONS}" = "yes" ]; then
-    echo
-    echo -e "Injecting combine helper functions"
-
-    cat <<EOF >> ${SCRIPT_OUTPUT_PATH}
-
-
-#
-# Combine.sh Helper Functions
-#
-
-# List of all internal functions injected into output script
-__combinescript__injected_functions=("cprint" "white" "green" "red" "orange" "success" "failure" "error" "warning" "fallback" "exitlog" "onfail" "__combinescript__function_exists" "__combinescript__function_name" "__combinescript__is_function_public" "__combinescript__print_commands" "__combinescript__print_functions" "__combinescript__print_help" "__combinescript__function_name_is_injected")
 
 # Checks if function name is an injected internal function
 function __combinescript__function_name_is_injected
@@ -325,12 +325,14 @@ function __combinescript__function_name_is_injected
 	return 1
 }
 
+
 # Check if public function exists
 function __combinescript__function_exists
 {
     local func_name="\$1"
     [[ "\$(declare -f "\$func_name")" ]]
 }
+
 
 # Returns function name (if USE_PUBLIC_FUNCTIONS_CASE_INSENSITIVE is true, input may be modified)
 function __combinescript__function_name
@@ -347,6 +349,7 @@ function __combinescript__function_name
 	return 0
 }
 
+
 # Check if function name is public
 function __combinescript__is_function_public
 {
@@ -358,6 +361,7 @@ function __combinescript__is_function_public
     fi
     return 1
 }
+
 
 # Print a list of script commands
 function __combinescript__print_commands
